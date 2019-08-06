@@ -16,34 +16,27 @@ class User extends ServiceEntityRepository
     }
 
     /**
-     * @param $userId
+     * @param null $userId
      * @return array
      * @throws Exception
      */
-    public function load($userId) {
-        $user = $this->findOneById($userId);
-
-        if($user) {
-            $eavTypes = $this->getEavTypes();
-            if(count($eavTypes) > 0) {
-                $em = $this->getEntityManager();
-                $userAttributes = [];
-                foreach($eavTypes as $eavType) {
-                    $query = $em->createQuery(
-                        'SELECT a.attributeCode, a.entityTypeId, a.label, a.type, b.value
-                            FROM App\Entity\Eav\EavAttributes a
-                            INNER JOIN App\Entity\User\UserEntity'.ucfirst($eavType).' b
-                            WITH a.id = b.attributeId
-                            WHERE b.entityId ='.$userId
-                    );
-                    $result = $query->execute();
-                    foreach($result as $attribute) {
-                        $userAttributes[($attribute['attributeCode'])] = $attribute;
-                    }
-                }
+    public function load($userId = null) {
+        if($userId != null) {
+            $users = $this->findOneById($userId);
+            if(!$users) {
+                throw new Exception("Nie znaleziono użytkownika");
             }
+            $users = [$users];
+        } else {
+            $users = $this->findAll();
+        }
 
-            $userData = [
+        $userData = [];
+        $i = 0;
+        foreach($users as $user) {
+            $userAttributes = $this->getAttributes($user->getId());
+
+            $userData[$i] = [
                 "id" => $user->getId(),
                 "firstname" => $user->getFirstname(),
                 "lastname" => $user->getLastname(),
@@ -51,14 +44,14 @@ class User extends ServiceEntityRepository
                 "description" => $user->getDescription()
             ];
 
-            if(isset($userAttributes)) {
-                $userData['attributes'] = $userAttributes;
+            if($userAttributes != NULL) {
+                $userData[$i]['attributes'] = $userAttributes;
             }
 
-            return $userData;
-        } else {
-            throw new Exception("Nie znaleziono użytkownika");
+            $i++;
         }
+
+        return $userData;
     }
 
     /**
@@ -77,5 +70,36 @@ class User extends ServiceEntityRepository
         }
 
         return $data;
+    }
+
+    /**
+     * @param $userId
+     * @return array|null
+     */
+    private function getAttributes($userId) {
+        $userAttributes = [];
+        $eavTypes = $this->getEavTypes();
+        if(count($eavTypes) > 0) {
+            $em = $this->getEntityManager();
+            foreach($eavTypes as $eavType) {
+                $query = $em->createQuery(
+                    'SELECT a.attributeCode, a.entityTypeId, a.label, a.type, b.value
+                            FROM App\Entity\Eav\EavAttributes a
+                            INNER JOIN App\Entity\User\UserEntity'.ucfirst($eavType).' b
+                            WITH a.id = b.attributeId
+                            WHERE b.entityId ='.$userId
+                );
+                $result = $query->execute();
+                foreach($result as $attribute) {
+                    $userAttributes[($attribute['attributeCode'])] = $attribute;
+                }
+            }
+        }
+
+        if(count($userAttributes) > 0) {
+            return $userAttributes;
+        } else {
+            return NULL;
+        }
     }
 }

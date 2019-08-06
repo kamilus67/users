@@ -29,10 +29,22 @@ class UserController extends AbstractController
         $response->headers->set("Content-Type", "application/json");
         $response->headers->set("Access-Control-Allow-Origin", "*");
 
-        $response->setContent(json_encode([
-            "result" => true,
-            "content" => "..."
-        ]));
+        $em = $this->getDoctrine()->getManager();
+
+        try {
+            $result = $em->getRepository(UserEntity::class)->load();
+
+            $response->setContent(json_encode([
+                "result" => true,
+                "content" => $result
+            ]));
+        } catch(Exception $e) {
+            $response->setStatusCode(500);
+            $response->setContent(json_encode([
+                "result" => false,
+                "message" => $e->getMessage()
+            ]));
+        }
 
         return $response;
     }
