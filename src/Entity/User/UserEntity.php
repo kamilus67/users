@@ -164,4 +164,42 @@ class UserEntity
 
         return true;
     }
+
+    public function updateUser($em, $data) {
+        $this->setFirstname($data['firstname']);
+        $this->setLastname($data['lastname']);
+        $this->setEmail($data['email']);
+        $this->setDescription(($data['description']) ?: '');
+
+        try {
+            $em->persist($this);
+            $em->flush();
+        } catch(Exception $e) {
+            throw new Exception("Wystąpił błąd podczas aktualizacji użytkownika");
+        }
+
+        if(count((array)$data['attribute']) > 0) {
+            foreach ($data['attribute'] as $attributeCode => $attributeValue) {
+                $eavAttribute = $em->getRepository(EavAttributes::class)->findOneByAttributeCode($attributeCode);
+
+                $eavClassName = 'App\Entity\User\UserEntity' . ucfirst($eavAttribute->getEavType());
+                $eavClass = $em->getRepository($eavClassName)->findOneBy([
+                    "attributeId" => $eavAttribute->getId(),
+                    "entityId" => $data['user_id']
+                ]);
+
+                if($eavClass) {
+                    $eavClass->setValue($attributeValue);
+                }
+
+                try {
+                    $em->flush();
+                } catch (Exception $e) {
+                    throw new Exception("Wystąpił błąd podczas aktualizacji użytkownika");
+                }
+            }
+        }
+
+        return true;
+    }
 }

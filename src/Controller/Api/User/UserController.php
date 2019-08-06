@@ -121,10 +121,35 @@ class UserController extends AbstractController
         $response->headers->set("Content-Type", "application/json");
         $response->headers->set("Access-Control-Allow-Origin", "*");
 
-        $response->setContent(json_encode([
-            "result" => true,
-            "content" => $userId
-        ]));
+        $data = [
+            'user_id' => $userId,
+            'firstname' => $request->get('firstname'),
+            'lastname' => $request->get('lastname'),
+            'email' => $request->get('email'),
+            'description' => $request->get('description'),
+            'attribute' => $request->get('attribute'),
+        ];
+
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository(UserEntity::class)->findOneById($userId);
+
+        try {
+            if($user) {
+                $user->updateUser($em, $data);
+
+                $response->setContent(json_encode([
+                    "result" => true
+                ]));
+            } else {
+                throw new Exception("Nie znaleziono użytkownika");
+            }
+        } catch(Exception $e) {
+            $response->setStatusCode(500);
+            $response->setContent(json_encode([
+                "result" => false,
+                "message" => $e->getMessage()
+            ]));
+        }
 
         return $response;
     }
