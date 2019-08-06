@@ -2,10 +2,12 @@
 
 namespace App\Controller\Api\User;
 
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use App\Entity\User\UserEntity;
 
 class UserController extends AbstractController
 {
@@ -43,10 +45,22 @@ class UserController extends AbstractController
         $response->headers->set("Content-Type", "application/json");
         $response->headers->set("Access-Control-Allow-Origin", "*");
 
-        $response->setContent(json_encode([
-            "result" => true,
-            "content" => $userId
-        ]));
+        $em = $this->getDoctrine()->getManager();
+
+        try {
+            $result = $em->getRepository(UserEntity::class)->load($userId);
+
+            $response->setContent(json_encode([
+                "result" => true,
+                "content" => $result
+            ]));
+        } catch(Exception $e) {
+            $response->setStatusCode(500);
+            $response->setContent(json_encode([
+                "result" => false,
+                "message" => $e->getMessage()
+            ]));
+        }
 
         return $response;
     }
@@ -59,10 +73,30 @@ class UserController extends AbstractController
         $response->headers->set("Content-Type", "application/json");
         $response->headers->set("Access-Control-Allow-Origin", "*");
 
-        $response->setContent(json_encode([
-            "result" => true,
-            "content" => "..."
-        ]));
+        $data = [
+            'firstname' => $request->get('firstname'),
+            'lastname' => $request->get('lastname'),
+            'email' => $request->get('email'),
+            'description' => $request->get('description'),
+            'attribute' => $request->get('attribute'),
+        ];
+
+        $user = new UserEntity();
+        $em = $this->getDoctrine()->getManager();
+
+        try {
+            $user->setUser($em, $data);
+
+            $response->setContent(json_encode([
+                "result" => true
+            ]));
+        } catch(Exception $e) {
+            $response->setStatusCode(500);
+            $response->setContent(json_encode([
+                "result" => false,
+                "message" => $e->getMessage()
+            ]));
+        }
 
         return $response;
     }
@@ -91,10 +125,22 @@ class UserController extends AbstractController
         $response->headers->set("Content-Type", "application/json");
         $response->headers->set("Access-Control-Allow-Origin", "*");
 
-        $response->setContent(json_encode([
-            "result" => true,
-            "content" => $userId
-        ]));
+        $user = new UserEntity();
+        $em = $this->getDoctrine()->getManager();
+
+        try {
+            $user->deleteUser($em, $userId);
+
+            $response->setContent(json_encode([
+                "result" => true
+            ]));
+        } catch(Exception $e) {
+            $response->setStatusCode(500);
+            $response->setContent(json_encode([
+                "result" => false,
+                "message" => $e->getMessage()
+            ]));
+        }
 
         return $response;
     }
