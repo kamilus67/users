@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use App\Entity\Eav\EavAttributes;
+use App\Entity\Eav\EavAttributesOption;
 
 class FormController extends AbstractController
 {
@@ -22,9 +22,9 @@ class FormController extends AbstractController
     }
 
     /**
-     * @Route("/api/form/get-attribute-fields/type/{typeId}", name="api_form_get_attribute_fields", methods={"GET"})
+     * @Route("/api/form/get-options", name="api_form_get_options", methods={"GET"})
      */
-    public function getAttributeFields(Request $request, $typeId) {
+    public function getOptions(Request $request) {
         $response = new Response();
         $response->headers->set("Content-Type", "application/json");
         $response->headers->set("Access-Control-Allow-Origin", "*");
@@ -32,11 +32,7 @@ class FormController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         try {
-            if(!$typeId) {
-                throw new Exception("Wystąpił błąd");
-            }
-
-            $result = $em->getRepository(EavAttributes::class)->getAttributesByEntityTypeId($typeId);
+            $result = $em->getRepository(EavAttributesOption::class)->findAllOptions();
 
             $response->setContent(json_encode([
                 "result" => true,

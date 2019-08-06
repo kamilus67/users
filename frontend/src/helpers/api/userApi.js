@@ -15,7 +15,7 @@ export const post = (data) =>
         lastname: data.lastname,
         email: data.email,
         description: data.description,
-        attributes: data.attributes
+        attribute: data.attribute
     });
 
 export const put = (data) =>
@@ -24,7 +24,7 @@ export const put = (data) =>
         lastname: data.lastname,
         email: data.email,
         description: data.description,
-        attributes: data.attributes
+        attribute: data.attribute
     });
 
 export const deleteRequest = (userId) =>

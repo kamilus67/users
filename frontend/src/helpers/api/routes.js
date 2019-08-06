@@ -5,3 +5,6 @@ export const userUrl = () =>
 
 export const formGetAttributeFieldsUrl = (typeId) =>
     `${apiServerUrl}/api/form/get-attribute-fields/type/${typeId}`
+
+export const formGetOptions = (typeId) =>
+    `${apiServerUrl}/api/form/get-options`

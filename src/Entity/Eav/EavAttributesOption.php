@@ -5,7 +5,7 @@ namespace App\Entity\Eav;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\EavAttributesOption")
  */
 class EavAttributesOption
 {

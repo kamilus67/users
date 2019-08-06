@@ -41,10 +41,18 @@ const apiCall = (url, method, body, resolve, reject) =>
  * @param body
  * @returns {string}
  */
-const getParams = (body) => {
+const getParams = (body, child) => {
     var string = "";
     for(var i in body) {
-        string = string + i + "=" + body[i] + "&";
+        if(typeof body[i] === 'object') {
+            string = string + getParams(body[i], i) + "&";
+        } else {
+            if(typeof child !== 'undefined') {
+                string = string + child + "[" + i + "]=" + body[i] + "&";
+            } else {
+                string = string + i + "=" + body[i] + "&";
+            }
+        }
     }
 
     return string;
