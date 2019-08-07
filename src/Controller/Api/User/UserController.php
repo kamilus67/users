@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\User\UserEntity;
+use App\Helper\Email;
 
 class UserController extends AbstractController
 {
@@ -105,6 +106,9 @@ class UserController extends AbstractController
 
         try {
             $user->setUser($em, $data);
+
+            $email = new Email();
+            $email->sendHello($em->getRepository(UserEntity::class)->load($user->getId()), $em);
 
             $response->setContent(json_encode([
                 "result" => true
