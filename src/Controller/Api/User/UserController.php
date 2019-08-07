@@ -22,6 +22,13 @@ class UserController extends AbstractController
     }
 
     /**
+     * @Route("/api/user/{userId}", name="api_user_options_id", methods={"OPTIONS"})
+     */
+    public function optionsUserIdAction() {
+        return $this->optionsAction();
+    }
+
+    /**
      * @Route("/api/user", name="api_user_get_collection", methods={"GET"})
      */
     public function getCollectionAction(Request $request) {
