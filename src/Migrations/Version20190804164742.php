@@ -43,7 +43,6 @@ final class Version20190804164742 extends AbstractMigration
         $this->addSql("INSERT INTO eav_attributes (attribute_code, entity_type_id, label, type, eav_type) VALUES ('zna_mysql', 2, 'Zna MySQL', 'checkbox', 'int')");
 
         $this->addSql("INSERT INTO eav_attributes (attribute_code, entity_type_id, label, type, eav_type) VALUES ('metodologie_prowadzenia_projektow', 3, 'Metodologie prowadzenia projektów', 'text', 'varchar')");
-        $this->addSql("INSERT INTO eav_attributes (attribute_code, entity_type_id, label, type, eav_type) VALUES ('systemy_raportowe', 3, 'Systemy raportowe', 'text', 'varchar')");
         $this->addSql("INSERT INTO eav_attributes (attribute_code, entity_type_id, label, type, eav_type) VALUES ('zna_scrum', 3, 'Zna Scrum', 'checkbox', 'int')");
     }
 
