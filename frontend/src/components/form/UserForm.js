@@ -148,6 +148,7 @@ class UserForm extends Component {
         return(
             <div>
                 <Breadcrumb>
+                    <Breadcrumb.Item>Aplikacja na rekrutację</Breadcrumb.Item>
                     <Breadcrumb.Item>Formularz rejestracyjny</Breadcrumb.Item>
                 </Breadcrumb>
                 <Alert show={this.state.alert_show} variant={this.state.alert_type}>{this.state.alert_content}</Alert>

@@ -197,9 +197,9 @@ class Admin extends Component {
     updateRow = () => {
         const id = this.state.userId;
 
-        document.getElementById("user-3").cells[0].innerHTML = this.state.firstname;
-        document.getElementById("user-3").cells[1].innerHTML = this.state.lastname;
-        document.getElementById("user-3").cells[2].innerHTML = this.state.email;
+        document.getElementById("user-" + id).cells[0].innerHTML = this.state.firstname;
+        document.getElementById("user-" + id).cells[1].innerHTML = this.state.lastname;
+        document.getElementById("user-" + id).cells[2].innerHTML = this.state.email;
     }
 
     clearForm = () => {
@@ -249,16 +249,17 @@ class Admin extends Component {
         return(
             <div>
                 <Breadcrumb>
-                    <Breadcrumb.Item>Admin panel</Breadcrumb.Item>
+                    <Breadcrumb.Item>Aplikacja na rekrutację</Breadcrumb.Item>
+                    <Breadcrumb.Item>Panel administracyjny</Breadcrumb.Item>
                 </Breadcrumb>
                 <Alert show={this.state.alert_show} variant={this.state.alert_type}>{this.state.alert_content}</Alert>
                 <Table striped bordered hover>
                     <thead>
                         <tr>
-                            <th>Firstname</th>
-                            <th>Lastname</th>
+                            <th>Imię</th>
+                            <th>Nazwisko</th>
                             <th>Email</th>
-                            <th>Option</th>
+                            <th>Opcje</th>
                         </tr>
                     </thead>
                     <tbody>

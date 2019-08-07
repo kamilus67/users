@@ -15,7 +15,7 @@ class App extends Component {
                     <Nav.Link href="/">Formularz rejestracyjny</Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                    <Nav.Link href="/admin">Admin panel</Nav.Link>
+                    <Nav.Link href="/admin">Panel administracyjny</Nav.Link>
                 </Nav.Item>
             </Nav>
             <Router>
